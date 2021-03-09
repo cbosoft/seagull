@@ -6,3 +6,4 @@ typedef struct {
 } GpuData;
 
 GpuData get_gpu_data();
+GpuData *check_has_gpu();

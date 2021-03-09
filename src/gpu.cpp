@@ -1,4 +1,5 @@
 #include <sstream>
+#include <iostream>
 
 #include "gpu.hpp"
 #include "runsh.hpp"
@@ -17,4 +18,13 @@ GpuData get_gpu_data()
   rv.gpu_perc = std::stof(gpu_s);
   rv.vram_perc = std::stof(vram_s);
   return rv;
+}
+
+GpuData *check_has_gpu()
+{
+  if (system("which nvidia-smi > /dev/null 2>&1")) {
+    return nullptr;
+  }
+
+  return new GpuData();
 }

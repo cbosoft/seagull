@@ -84,13 +84,16 @@ main(void)
   signal(SIGWINCH, handle_sigwinch);
 
   auto *cd = new CpuData;
-  auto *gd = new GpuData;
   *cd = get_cpu_data();
-  *gd = get_gpu_data();
 	plot_add_dataset(p, plot_color_green, nullptr, 0, cpu_perc, cd);
 	plot_add_dataset(p, plot_color_red, nullptr, 0, ram_perc, cd);
-	plot_add_dataset(p, plot_color_blue, nullptr, 0, gpu_perc, gd);
-	plot_add_dataset(p, plot_color_yellow, nullptr, 0, vram_perc, gd);
+
+  auto *gd = check_has_gpu();
+  if (gd) {
+    *gd = get_gpu_data();
+	  plot_add_dataset(p, plot_color_blue, nullptr, 0, gpu_perc, gd);
+	  plot_add_dataset(p, plot_color_yellow, nullptr, 0, vram_perc, gd);
+  }
 
 	while (run) {
 		if (resized) {
@@ -114,10 +117,10 @@ main(void)
 		}
 
     *cd = get_cpu_data();
-    *gd = get_gpu_data();
+    if (gd) *gd = get_gpu_data();
 		plot_string(p, buf, buf_size);
     clear_screen();
-    std::cout << get_ordered_legend(cd->cpu_perc, cd->ram_perc, gd->gpu_perc, gd->vram_perc) << '\n' << buf << std::endl;
+    std::cout << get_ordered_legend(cd, gd) << '\n' << buf << std::endl;
 
 		if (!paused) {
 			plot_fetch(p, 1);

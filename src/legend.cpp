@@ -27,23 +27,31 @@ class LegendItem {
     std::string _name;
 };
 
-std::string get_ordered_legend(float cpu_perc, float ram_perc, float gpu_perc, float vram_perc)
+std::string get_ordered_legend(CpuData *cd, GpuData *gd)
 {
   std::vector<LegendItem> items = {
-     {cpu_perc, "\033[32mCPU"},
-     {ram_perc, "\033[31mRAM"},
-     {gpu_perc, "\033[34mGPU"},
-     {vram_perc, "\033[33mVRAM"}
+     {cd->cpu_perc, "\033[32mCPU"},
+     {cd->ram_perc, "\033[31mRAM"}
   };
+
+  if (gd) {
+    items.push_back(LegendItem(gd->gpu_perc, "\033[34mGPU"));
+    items.push_back(LegendItem(gd->vram_perc, "\033[33mVRAM"));
+  }
 
   std::sort(items.begin(), items.end());
 
   std::stringstream ss;
-  ss << items[0].name() << ">";
-  ss << items[1].name() << ">";
-  ss << items[2].name() << ">";
-  ss << items[3].name();
+  for (size_t i = 0; i < items.size(); i++) {
+    ss << items[i].name() << "\033[0m";
+    if (i < items.size()-1) {
+      ss << ">";
+    }
+  }
 
-  ss << "\033[0m";
+  if (!gd) {
+    ss << " (no GPU)";
+  }
+
   return ss.str();
 }
