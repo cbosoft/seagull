@@ -30,13 +30,13 @@ class LegendItem {
 std::string get_ordered_legend(CpuData *cd, GpuData *gd)
 {
   std::vector<LegendItem> items = {
-     {cd->cpu_perc, "\033[32mCPU"},
-     {cd->ram_perc, "\033[31mRAM"}
+     {cd->cpu(), "\033[32mCPU"},
+     {cd->ram(), "\033[31mRAM"}
   };
 
   if (gd) {
-    items.push_back(LegendItem(gd->gpu_perc, "\033[34mGPU"));
-    items.push_back(LegendItem(gd->vram_perc, "\033[33mVRAM"));
+    items.push_back(LegendItem(gd->gpu(), "\033[34mGPU"));
+    items.push_back(LegendItem(gd->vram(), "\033[33mVRAM"));
   }
 
   std::sort(items.begin(), items.end());

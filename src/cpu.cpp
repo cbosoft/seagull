@@ -5,7 +5,7 @@
 #include "cpu.hpp"
 #include "runsh.hpp"
 
-float parse_cpu_perc(std::string &line)
+static float parse_cpu_perc(std::string &line)
 {
   std::stringstream ss(line);
   std::string buff;
@@ -15,7 +15,7 @@ float parse_cpu_perc(std::string &line)
   return 100.0 - std::stof(buff);
 }
 
-float parse_ram_perc(std::string &line)
+static float parse_ram_perc(std::string &line)
 {
   std::stringstream ss(line);
   std::string buff;
@@ -28,17 +28,25 @@ float parse_ram_perc(std::string &line)
   return 100.0*(1. - free/total);
 }
 
+CpuData::CpuData()
+  : _cpu(0)
+  , _ram(0)
+{
+  // do nothing
+}
 
-CpuData get_cpu_data()
+
+void CpuData::update()
 {
   auto raw = runsh("top bn1");
-  CpuData rv = {0, 0};
 
   std::stringstream ss(raw);
   std::string buff;
   for (int i = 0; i < 3; i++) std::getline(ss, buff, '\n');
-  rv.cpu_perc = parse_cpu_perc(buff);
+  this->_cpu = parse_cpu_perc(buff);
   std::getline(ss, buff, '\n');
-  rv.ram_perc = parse_ram_perc(buff);
-  return rv;
+  this->_ram = parse_ram_perc(buff);
 }
+
+float CpuData::cpu() const { return this->_cpu; }
+float CpuData::ram() const { return this->_ram; }

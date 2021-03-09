@@ -1,9 +1,16 @@
 #pragma once
 
-typedef struct {
-  float gpu_perc;
-  float vram_perc;
-} GpuData;
+class GpuData {
+  public:
+    GpuData();
 
-GpuData get_gpu_data();
+    void update();
+    float gpu() const;
+    float vram() const;
+
+  private:
+    float _gpu;
+    float _vram;
+};
+
 GpuData *check_has_gpu();

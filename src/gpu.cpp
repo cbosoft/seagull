@@ -4,7 +4,14 @@
 #include "gpu.hpp"
 #include "runsh.hpp"
 
-GpuData get_gpu_data()
+GpuData::GpuData()
+  : _gpu(0)
+  , _vram(0)
+{
+  // do nothing
+}
+
+void GpuData::update()
 {
   std::string raw = runsh("nvidia-smi --query-gpu=utilization.gpu,utilization.memory --format=csv,noheader,nounits");
   
@@ -14,10 +21,8 @@ GpuData get_gpu_data()
   std::getline(ss, gpu_s, ',');
   std::getline(ss, vram_s, '\n');
 
-  GpuData rv = {0, 0};
-  rv.gpu_perc = std::stof(gpu_s);
-  rv.vram_perc = std::stof(vram_s);
-  return rv;
+  this->_gpu = std::stof(gpu_s);
+  this->_vram = std::stof(vram_s);
 }
 
 GpuData *check_has_gpu()
@@ -28,3 +33,6 @@ GpuData *check_has_gpu()
 
   return new GpuData();
 }
+
+float GpuData::gpu() const { return this->_gpu; }
+float GpuData::vram() const { return this->_vram; }

@@ -29,7 +29,7 @@ cpu_perc(void *cd_vptr, double *out, uint32_t out_max)
 {
   (void) out_max;
   auto *cd = (CpuData *)cd_vptr;
-  *out = double(cd->cpu_perc);
+  *out = double(cd->cpu());
 	return 1;
 }
 
@@ -38,7 +38,7 @@ ram_perc(void *cd_vptr, double *out, uint32_t out_max)
 {
   (void) out_max;
   auto *cd = (CpuData *)cd_vptr;
-  *out = double(cd->ram_perc);
+  *out = double(cd->ram());
 	return 1;
 }
 
@@ -47,7 +47,7 @@ gpu_perc(void *gd_vptr, double *out, uint32_t out_max)
 {
   (void) out_max;
   auto *gd = (GpuData *)gd_vptr;
-  *out = double(gd->gpu_perc);
+  *out = double(gd->gpu());
 	return 1;
 }
 
@@ -56,7 +56,7 @@ vram_perc(void *gd_vptr, double *out, uint32_t out_max)
 {
   (void) out_max;
   auto *gd = (GpuData *)gd_vptr;
-  *out = double(gd->vram_perc);
+  *out = double(gd->vram());
 	return 1;
 }
 
@@ -84,13 +84,13 @@ main(void)
   signal(SIGWINCH, handle_sigwinch);
 
   auto *cd = new CpuData;
-  *cd = get_cpu_data();
+  cd->update();
 	plot_add_dataset(p, plot_color_green, nullptr, 0, cpu_perc, cd);
 	plot_add_dataset(p, plot_color_red, nullptr, 0, ram_perc, cd);
 
   auto *gd = check_has_gpu();
   if (gd) {
-    *gd = get_gpu_data();
+    gd->update();
 	  plot_add_dataset(p, plot_color_blue, nullptr, 0, gpu_perc, gd);
 	  plot_add_dataset(p, plot_color_yellow, nullptr, 0, vram_perc, gd);
   }
@@ -116,8 +116,8 @@ main(void)
 			resized = false;
 		}
 
-    *cd = get_cpu_data();
-    if (gd) *gd = get_gpu_data();
+    cd->update();
+    if (gd) gd->update();
 		plot_string(p, buf, buf_size);
     clear_screen();
     std::cout << get_ordered_legend(cd, gd) << '\n' << buf << std::endl;
