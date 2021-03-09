@@ -1,16 +1,18 @@
+/*
+
+based on https://github.com/annacrombie/plot/blob/master/examples/simple_curses.c
+
+but without the curses.
+
+ */
+
 #define _POSIX_C_SOURCE 200809L
 #include <iostream>
 #include <unistd.h>
-// #include <curses.h>
 #include <sys/ioctl.h>
-#include <locale.h>
-#include <math.h>
 #include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
+#include "legend.hpp"
 #include "cpu.hpp"
 #include "gpu.hpp"
 #include "plot.h"
@@ -85,7 +87,6 @@ main(void)
   auto *gd = new GpuData;
   *cd = get_cpu_data();
   *gd = get_gpu_data();
-  std::string legend = "\033[32mCPU \033[31mRAM \033[34mGPU \033[33mVRAM\033[0m";
 	plot_add_dataset(p, plot_color_green, nullptr, 0, cpu_perc, cd);
 	plot_add_dataset(p, plot_color_red, nullptr, 0, ram_perc, cd);
 	plot_add_dataset(p, plot_color_blue, nullptr, 0, gpu_perc, gd);
@@ -116,7 +117,7 @@ main(void)
     *gd = get_gpu_data();
 		plot_string(p, buf, buf_size);
     clear_screen();
-    std::cout << legend << '\n' << buf << std::endl;
+    std::cout << get_ordered_legend(cd->cpu_perc, cd->ram_perc, gd->gpu_perc, gd->vram_perc) << '\n' << buf << std::endl;
 
 		if (!paused) {
 			plot_fetch(p, 1);

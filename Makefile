@@ -2,7 +2,7 @@ CXX ?= g++
 CFLAGS = -Wall -Wextra -Werror -std=c++17 -O2
 
 HDR = $(shell ls src/*.hpp)
-OBJ = obj/main.o obj/cpu.o obj/gpu.o obj/runsh.o
+OBJ = obj/main.o obj/cpu.o obj/gpu.o obj/runsh.o obj/legend.o
 LINK = -lplot -lcurses
 DEFS =
 
