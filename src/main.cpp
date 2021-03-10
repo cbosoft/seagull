@@ -23,6 +23,7 @@ void clear_screen()
 }
 
 static bool resized = true;
+static bool done = false;
 
 static uint32_t
 cpu_perc(void *cd_vptr, double *out, uint32_t out_max)
@@ -67,6 +68,13 @@ handle_sigwinch(int _)
 	resized = true;
 }
 
+static void
+handle_sigint(int _)
+{
+  (void) _;
+	done = true;
+}
+
 #define MAX_HEIGHT 256
 #define MAX_WIDTH 256
 
@@ -76,12 +84,11 @@ main(void)
 
 	struct plot *p = plot_alloc(MAX_HEIGHT, MAX_WIDTH, 12);
 
-	bool run = true, paused = false;
-
 	const size_t buf_size = 99999;
 	char buf[buf_size];
 
   signal(SIGWINCH, handle_sigwinch);
+  signal(SIGINT, handle_sigint);
 
   auto *cd = new CpuData;
   cd->update();
@@ -95,7 +102,7 @@ main(void)
 	  plot_add_dataset(p, plot_color_yellow, nullptr, 0, vram_perc, gd);
   }
 
-	while (run) {
+	while (!done) {
 		if (resized) {
 			struct winsize w;
 
@@ -118,16 +125,16 @@ main(void)
 
     cd->update();
     if (gd) gd->update();
+		plot_fetch(p, 1);
 		plot_string(p, buf, buf_size);
     clear_screen();
     std::cout << get_ordered_legend(cd, gd) << '\n' << buf << std::endl;
 
-		if (!paused) {
-			plot_fetch(p, 1);
-		}
-
 		usleep(1000*1000);
 	}
+
+  clear_screen();
+
 
 	plot_free(p);
   delete cd;
