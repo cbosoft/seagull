@@ -34,5 +34,8 @@ seagull: $(OBJ) $(HDR)
 install: seagull
 	cp seagull $(INSTALL_PREFIX)/bin/seagull
 
+uninstall:
+	rm $(INSTALL_PREFIX)/bin/seagull
+
 clean:
 	rm -rf obj seagull
