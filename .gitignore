@@ -3,3 +3,4 @@ seagull
 *.un~
 .idea
 tags
+libplot.so

@@ -1,0 +1,3 @@
+[submodule "plot"]
+	path = plot
+	url = git@github.com:annacrombie/plot

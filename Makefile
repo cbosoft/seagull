@@ -22,7 +22,7 @@ obj/%.o: src/%.cpp $(HDR)
 
 .PHONY: all options
 
-all: options seagull
+all: options seagull libplot.so
 
 options:
 	@printf "Compiler: $(COL_BLD)$(CXX)$(COL_RST)\n"
@@ -31,11 +31,16 @@ seagull: $(OBJ) $(HDR)
 	@printf "$(COL_OBJ)LINKING OBJECTS TO EXECUTABLE $@$(COL_RST)\n"
 	@$(CXX) $(CFLAGS) $(DEFS) $(OBJ) -o $@ $(LINK)
 
-install: seagull
+libplot.so:
+	cd plot && meson build && ninja -C build
+	cp plot/build/lib/libplot.so .
+
+install: seagull libplot.so
 	cp seagull $(INSTALL_PREFIX)/bin/seagull
+	cp libplot.so $(INSTALL_PREFIX)/lib/libplot.so
 
 uninstall:
 	rm $(INSTALL_PREFIX)/bin/seagull
 
 clean:
-	rm -rf obj seagull
+	rm -rf obj seagull libplot.so
