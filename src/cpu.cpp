@@ -24,8 +24,10 @@ static float parse_ram_perc(std::string &line)
   float total = std::stof(buff);
   std::getline(ss, buff, ',');
   std::getline(ss, buff, 'f');
-  float free = std::stof(buff);
-  return 100.0*(1. - free/total);
+  std::getline(ss, buff, ',');
+  std::getline(ss, buff, 'u');
+  float used = std::stof(buff);
+  return 100.0*(used/total);
 }
 
 CpuData::CpuData()
