@@ -130,4 +130,6 @@ main(void)
 	}
 
 	plot_free(p);
+  delete cd;
+  delete gd;
 }
