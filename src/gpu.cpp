@@ -21,8 +21,8 @@ void GpuData::update()
   std::getline(ss, gpu_s, ',');
   std::getline(ss, vram_s, '\n');
 
-  this->_gpu = std::stof(gpu_s);
-  this->_vram = std::stof(vram_s);
+  this->add_gpu_value(std::stof(gpu_s));
+  this->add_vram_value(std::stof(vram_s));
 }
 
 GpuData *check_has_gpu()
@@ -34,5 +34,7 @@ GpuData *check_has_gpu()
   return new GpuData();
 }
 
-float GpuData::gpu() const { return this->_gpu; }
-float GpuData::vram() const { return this->_vram; }
+void GpuData::add_gpu_value(float val) { this->add_val_to_vec(this->_gpu, val); }
+void GpuData::add_vram_value(float val) { this->add_val_to_vec(this->_vram, val); }
+float GpuData::gpu() const { return this->get_average(this->_gpu); }
+float GpuData::vram() const { return this->get_average(this->_vram); }

@@ -1,6 +1,7 @@
 #pragma once
+#include "data.hpp"
 
-class GpuData {
+class GpuData: AveragedData{
   public:
     GpuData();
 
@@ -8,9 +9,12 @@ class GpuData {
     float gpu() const;
     float vram() const;
 
+    void add_gpu_value(float val);
+    void add_vram_value(float val);
+
   private:
-    float _gpu;
-    float _vram;
+    std::vector<float> _gpu;
+    std::vector<float> _vram;
 };
 
 GpuData *check_has_gpu();

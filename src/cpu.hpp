@@ -1,15 +1,18 @@
 #pragma once
+#include "data.hpp"
 
-class CpuData {
+class CpuData: AveragedData {
   public:
-    CpuData();
 
     void update();
 
     float cpu() const;
     float ram() const;
 
+    void add_cpu_value(float val);
+    void add_ram_value(float val);
+
   private:
-    float _cpu;
-    float _ram;
+    std::vector<float> _cpu;
+    std::vector<float> _ram;
 };

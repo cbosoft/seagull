@@ -30,13 +30,6 @@ static float parse_ram_perc(std::string &line)
   return 100.0*(used/total);
 }
 
-CpuData::CpuData()
-  : _cpu(0)
-  , _ram(0)
-{
-  // do nothing
-}
-
 
 void CpuData::update()
 {
@@ -45,10 +38,13 @@ void CpuData::update()
   std::stringstream ss(raw);
   std::string buff;
   for (int i = 0; i < 3; i++) std::getline(ss, buff, '\n');
-  this->_cpu = parse_cpu_perc(buff);
+  this->add_cpu_value(parse_cpu_perc(buff));
   std::getline(ss, buff, '\n');
-  this->_ram = parse_ram_perc(buff);
+  this->add_ram_value(parse_ram_perc(buff));
 }
 
-float CpuData::cpu() const { return this->_cpu; }
-float CpuData::ram() const { return this->_ram; }
+void CpuData::add_cpu_value(float val) { this->add_val_to_vec(this->_cpu, val); }
+void CpuData::add_ram_value(float val) { this->add_val_to_vec(this->_ram, val); }
+
+float CpuData::cpu() const { return this->get_average(this->_cpu); }
+float CpuData::ram() const { return this->get_average(this->_ram); }
