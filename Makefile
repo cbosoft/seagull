@@ -5,6 +5,7 @@ HDR = $(shell ls src/*.hpp)
 OBJ = obj/main.o obj/cpu.o obj/gpu.o obj/runsh.o obj/legend.o
 LINK = -lplot -lcurses
 DEFS =
+INSTALL_PREFIX = /usr/local
 
 ## Colours
 COL_OBJ = $(shell tput setaf 3 2>/dev/null)
@@ -29,6 +30,9 @@ options:
 seagull: $(OBJ) $(HDR)
 	@printf "$(COL_OBJ)LINKING OBJECTS TO EXECUTABLE $@$(COL_RST)\n"
 	@$(CXX) $(CFLAGS) $(DEFS) $(OBJ) -o $@ $(LINK)
+
+install: seagull
+	cp seagull $(INSTALL_PREFIX)/bin/seagull
 
 clean:
 	rm -rf obj seagull
