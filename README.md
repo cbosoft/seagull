@@ -26,5 +26,5 @@ sudo make uninstall
 # Why bother?
 
 `htop` is awesome. `nvidia-smi` does the job, I guess. I wanted to graphically
-show the combined output from both as rarely do I only can about CPU+RAM
+show the combined output from both as rarely do I only care about CPU+RAM
 utilization alone.
