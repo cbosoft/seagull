@@ -1,7 +1,7 @@
 # seagull
 
 <center>
-<img src="https://raw.githubusercontent.com/cbosoft/seagull/screen1.png" width="50%"/>
+<img src="https://raw.githubusercontent.com/cbosoft/seagull/master/screen1.png?raw=true" width="80%"/>
 </center>
 
 CPU, RAM, GPU, VRAM utilisation.
