@@ -1,9 +1,10 @@
 #pragma once
+#include "process.hpp"
 #include "data.hpp"
 
 class GpuData: AveragedData{
   public:
-    GpuData();
+    GpuData(ProcessesData *pdata);
 
     void update();
     float gpu() const;
@@ -15,6 +16,7 @@ class GpuData: AveragedData{
   private:
     std::vector<float> _gpu;
     std::vector<float> _vram;
+    ProcessesData *_pdata;
 };
 
-GpuData *check_has_gpu();
+GpuData *check_has_gpu(ProcessesData *pd);

@@ -13,8 +13,10 @@ but without the curses.
 #include <signal.h>
 
 #include <array>
+#include <sstream>
 
 #include "legend.hpp"
+#include "process.hpp"
 #include "cpu.hpp"
 #include "gpu.hpp"
 #include "plot.h"
@@ -94,12 +96,13 @@ main(void)
   signal(SIGWINCH, handle_sigwinch);
   signal(SIGINT, handle_sigint);
 
-  auto *cd = new CpuData;
+  auto *pd = new ProcessesData();
+  auto *cd = new CpuData(pd);
   cd->update();
 	plot_add_dataset(p, plot_color_green, nullptr, 0, cpu_perc, cd);
 	plot_add_dataset(p, plot_color_red, nullptr, 0, ram_perc, cd);
 
-  auto *gd = check_has_gpu();
+  auto *gd = check_has_gpu(pd);
   if (gd) {
     gd->update();
 	  plot_add_dataset(p, plot_color_blue, nullptr, 0, gpu_perc, gd);
@@ -117,13 +120,13 @@ main(void)
 				p->width = MAX_WIDTH;
 			}
 
-			p->width -= 20;
+			p->width -= 30;
 
 			if ((p->height = w.ws_row) > MAX_HEIGHT) {
 				p->height = MAX_HEIGHT;
 			}
 
-			p->height -= 1;
+			p->height -= 2;
 
 			resized = false;
 		}
@@ -132,10 +135,20 @@ main(void)
     if (gd) gd->update();
 		plot_fetch(p, 1);
 		plot_string(p, buffer.data(), buffer.size());
-    clear_screen();
-    std::string sbuff(buffer.data());
-    sbuff[sbuff.length()-5]=0;
-    std::cout << "   \033[30;44mseagull\033[0m  │ " << get_ordered_legend(cd, gd) << '\n' << sbuff << std::flush;
+    auto info = pd->get_info_lines();
+    size_t ninfo = info.size();
+
+    if (true) {
+      clear_screen();
+      pd->clear();
+      std::cout
+        << "   \033[30;44mseagull\033[0m  │ "
+        << get_ordered_legend(cd, gd) << "  │ ";
+      for (size_t i = 0; i < 3 && i < ninfo; i++)
+        std::cout << info[i] << " ";
+
+      std::cout << '\n' << buffer.data() << std::flush;
+    }
 
 		usleep(1000*1000);
 	}
