@@ -12,6 +12,8 @@ but without the curses.
 #include <sys/ioctl.h>
 #include <signal.h>
 
+#include <array>
+
 #include "legend.hpp"
 #include "cpu.hpp"
 #include "gpu.hpp"
@@ -78,14 +80,16 @@ handle_sigint(int _)
 #define MAX_HEIGHT 256
 #define MAX_WIDTH 256
 
+void show_cursor() { std::cout << "\033[?25h" << std::endl; }
+void hide_cursor() { std::cout << "\033[?25l" << std::endl; }
+
 int
 main(void)
 {
 
 	struct plot *p = plot_alloc(MAX_HEIGHT, MAX_WIDTH, 12);
 
-	const size_t buf_size = 99999;
-	char buf[buf_size];
+  std::array<char, 10000> buffer;
 
   signal(SIGWINCH, handle_sigwinch);
   signal(SIGINT, handle_sigint);
@@ -102,6 +106,7 @@ main(void)
 	  plot_add_dataset(p, plot_color_yellow, nullptr, 0, vram_perc, gd);
   }
 
+  hide_cursor();
 	while (!done) {
 		if (resized) {
 			struct winsize w;
@@ -118,7 +123,7 @@ main(void)
 				p->height = MAX_HEIGHT;
 			}
 
-			p->height -= 4;
+			p->height -= 1;
 
 			resized = false;
 		}
@@ -126,15 +131,18 @@ main(void)
     cd->update();
     if (gd) gd->update();
 		plot_fetch(p, 1);
-		plot_string(p, buf, buf_size);
+		plot_string(p, buffer.data(), buffer.size());
     clear_screen();
-    std::cout << get_ordered_legend(cd, gd) << '\n' << buf << std::endl;
+    std::string sbuff(buffer.data());
+    sbuff[sbuff.length()-5]=0;
+    std::cout << "   \033[30;44mseagull\033[0m  │ " << get_ordered_legend(cd, gd) << '\n' << sbuff << std::flush;
 
 		usleep(1000*1000);
 	}
 
   clear_screen();
 
+  show_cursor();
 
 	plot_free(p);
   delete cd;
