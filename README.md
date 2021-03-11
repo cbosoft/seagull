@@ -1,8 +1,15 @@
 # seagull
 
+<center>
+<img src="https://raw.githubusercontent.com/cbosoft/seagull/screen1.png" width="50%"/>
+</center>
+
 CPU, RAM, GPU, VRAM utilisation.
 
-Uses [annacrombie's plot library](https://github.com/annacrombie/plot) to plot system usage, as reported by `top` and `nvidia-smi`.
+Uses [annacrombie's plot library](https://github.com/annacrombie/plot) to plot
+system usage, as reported by `top` and `nvidia-smi`.  Offending processes are
+marked along the top, colour coded by their biggest used measurement. Per-process
+GPU usage is unavailable, unfortunately.
 
 If `nvidia-smi` is not found, GPU reporting is disabled.
 
