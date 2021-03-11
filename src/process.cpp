@@ -98,7 +98,7 @@ std::vector<std::string> ProcessesData::get_info_lines() const
     ss 
       << "\033[" << meas[0].colour << "m"
       << pd->name << " "
-      << pd->biggest_value()
+      << int(pd->biggest_value())
       << "\033[0m"
       ;
     rv.push_back(ss.str());
