@@ -63,7 +63,7 @@ static bool parse_proc(const std::string &procline, int &pid, std::string &name,
   start = start + 16;
   buf = std::string(start, procline.end());
 
-  if (_cpu > 10.0) {
+  if (_cpu > 10.0 || _ram > 10.0) {
     pid = _pid;
     name = buf;
     trim(name);
