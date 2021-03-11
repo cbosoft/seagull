@@ -120,7 +120,7 @@ main(void)
 				p->width = MAX_WIDTH;
 			}
 
-			p->width -= 30;
+			p->width -= 20;
 
 			if ((p->height = w.ws_row) > MAX_HEIGHT) {
 				p->height = MAX_HEIGHT;
